@@ -8,6 +8,7 @@ import { Bug } from "lucide-react"
 import { Sidebar } from "@/components/sidebar"
 import { Toaster } from "@/components/ui/toaster"
 import { NavigationProgress } from "@/components/navigation-progress"
+import { QueryProvider } from "@/lib/query-provider"
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -20,8 +21,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "v0 App",
-  description: "Created with v0",
+  title: "Tan Van Lang Bug Tracking",
+  description: "Bug tracking and penalty management system",
   generator: "v0.app",
   icons: {
     icon: [
@@ -50,32 +51,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
-        <Suspense fallback={null}>
-          <NavigationProgress />
-        </Suspense>
-        <div className="flex min-h-screen flex-col">
-          <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden">
-            <div className="flex h-14 items-center px-4">
-              <div className="flex items-center space-x-2">
-                <Bug className="h-6 w-6" />
-                <span className="font-bold">BugTracker</span>
+        <QueryProvider>
+          <Suspense fallback={null}>
+            <NavigationProgress />
+          </Suspense>
+          <div className="flex min-h-screen flex-col">
+            <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden">
+              <div className="flex h-14 items-center px-4">
+                <div className="flex items-center space-x-2">
+                  <Bug className="h-6 w-6" />
+                  <span className="font-bold">Tan Van Lang</span>
+                </div>
+                <div className="ml-auto">
+                  <Sidebar />
+                </div>
               </div>
-              <div className="ml-auto">
+            </header>
+            <div className="flex flex-1 md:mt-0">
+              <div className="hidden md:flex">
                 <Sidebar />
               </div>
+              <main className="flex-1 w-full max-w-full overflow-x-hidden">
+                <div className="container py-6 px-4 md:px-6 max-w-7xl mx-auto">{children}</div>
+              </main>
             </div>
-          </header>
-          <div className="flex flex-1 md:mt-0">
-            {/* Desktop sidebar - luôn hiển thị */}
-            <div className="hidden md:flex">
-              <Sidebar />
-            </div>
-            <main className="flex-1 w-full max-w-full overflow-x-hidden">
-              <div className="container py-6 px-4 md:px-6 max-w-7xl mx-auto">{children}</div>
-            </main>
           </div>
-        </div>
-        <Toaster />
+          <Toaster />
+        </QueryProvider>
         <Analytics />
       </body>
     </html>

@@ -5,7 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createBrowserClient } from "@supabase/ssr"
-import { Loader2, Shield } from "lucide-react"
+import { Loader2, Shield, LogOut } from "lucide-react"
 import type { Developer } from "@/lib/types"
 
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,7 @@ export function AccountForm({ developer }: AccountFormProps) {
   const [name, setName] = useState(developer.name)
   const [avatarUrl, setAvatarUrl] = useState(developer.avatar_url || "")
   const [loading, setLoading] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
   const router = useRouter()
   const { toast } = useToast()
 
@@ -36,6 +37,7 @@ export function AccountForm({ developer }: AccountFormProps) {
     setLoading(true)
 
     try {
+      console.log("[v0] Updating developer:", developer.id)
       const { error } = await supabase
         .from("developers")
         .update({
@@ -44,8 +46,12 @@ export function AccountForm({ developer }: AccountFormProps) {
         })
         .eq("id", developer.id)
 
-      if (error) throw error
+      if (error) {
+        console.error("[v0] Update error:", error)
+        throw error
+      }
 
+      console.log("[v0] Developer updated successfully")
       toast({
         title: "Profile updated",
         description: "Your account information has been saved successfully",
@@ -53,6 +59,7 @@ export function AccountForm({ developer }: AccountFormProps) {
 
       router.refresh()
     } catch (err: any) {
+      console.error("[v0] Update failed:", err)
       toast({
         variant: "destructive",
         title: "Update failed",
@@ -60,6 +67,36 @@ export function AccountForm({ developer }: AccountFormProps) {
       })
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleLogout = async () => {
+    setLoggingOut(true)
+    try {
+      console.log("[v0] Logging out...")
+      const { error } = await supabase.auth.signOut()
+
+      if (error) {
+        console.error("[v0] Logout error:", error)
+        throw error
+      }
+
+      console.log("[v0] Logged out successfully")
+      toast({
+        title: "Logged out",
+        description: "You have been logged out successfully",
+      })
+
+      router.push("/auth/login")
+      router.refresh()
+    } catch (err: any) {
+      console.error("[v0] Logout failed:", err)
+      toast({
+        variant: "destructive",
+        title: "Logout failed",
+        description: err.message,
+      })
+      setLoggingOut(false)
     }
   }
 
@@ -71,12 +108,24 @@ export function AccountForm({ developer }: AccountFormProps) {
             <CardTitle>Profile Information</CardTitle>
             <CardDescription>Update your personal details</CardDescription>
           </div>
-          {developer.role === "super_admin" && (
-            <Badge variant="default" className="flex items-center gap-1">
-              <Shield className="h-3 w-3" />
-              Super Admin
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            {developer.role === "super_admin" && (
+              <Badge variant="default" className="flex items-center gap-1">
+                <Shield className="h-3 w-3" />
+                Super Admin
+              </Badge>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              className="flex items-center gap-2 bg-transparent"
+            >
+              {loggingOut ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogOut className="h-4 w-4" />}
+              Logout
+            </Button>
+          </div>
         </div>
       </CardHeader>
       <CardContent>

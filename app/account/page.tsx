@@ -39,7 +39,9 @@ export default function AccountPage() {
       <div className="space-y-6">
         <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
         <Card className="p-6">
-          <p className="text-muted-foreground">Please log in to view your account settings.</p>
+          <p className="text-muted-foreground">
+            {!user ? "Please log in to view your account settings." : "Developer profile not found."}
+          </p>
         </Card>
       </div>
     )

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus } from "lucide-react"
+import { Plus, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
@@ -38,12 +38,16 @@ export function AddDeveloperDialog() {
     const password = formData.get("password") as string
     const role = formData.get("role") as string
 
+    console.log("[v0] Creating developer account:", { name, email, role })
+
     try {
+      // Step 1: Create auth account
+      console.log("[v0] Step 1: Creating auth account...")
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/`,
+          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/auth/login`,
           data: {
             role: role || "user",
             name: name,
@@ -51,26 +55,47 @@ export function AddDeveloperDialog() {
         },
       })
 
-      if (authError) throw authError
+      console.log("[v0] Auth result:", { authData, authError })
 
-      if (authData.user) {
-        const { error: devError } = await supabase.from("developers").insert({
-          id: authData.user.id,
-          name,
-          email,
-          avatar_url: avatar_url || null,
-          role: role || "user",
-        })
-
-        if (devError) throw devError
+      if (authError) {
+        console.error("[v0] Auth error:", authError)
+        throw new Error(`Failed to create account: ${authError.message}`)
       }
 
-      toast.success("Developer added successfully! Confirmation email sent.")
+      if (!authData.user) {
+        throw new Error("No user data returned from signup")
+      }
+
+      // Step 2: Create developer profile
+      console.log("[v0] Step 2: Creating developer profile with ID:", authData.user.id)
+      const { error: devError } = await supabase.from("developers").insert({
+        id: authData.user.id,
+        name,
+        email,
+        avatar_url: avatar_url || null,
+        role: role || "user",
+      })
+
+      console.log("[v0] Developer insert result:", { devError })
+
+      if (devError) {
+        console.error("[v0] Developer insert error:", devError)
+        // Try to clean up auth user if developer creation fails
+        // Note: This may not work due to RLS, but we try anyway
+        await supabase.auth.admin.deleteUser(authData.user.id).catch(() => {})
+        throw new Error(`Failed to create developer profile: ${devError.message}`)
+      }
+
+      console.log("[v0] Developer created successfully!")
+      toast.success("Developer added successfully! Confirmation email sent to " + email)
       setOpen(false)
       router.refresh()
+
+      // Reset form
+      e.currentTarget.reset()
     } catch (error: any) {
-      toast.error(error.message || "Failed to add developer")
-      console.error(error)
+      console.error("[v0] Error in add developer:", error)
+      toast.error(error.message || "Failed to add developer. Please check console for details.")
     } finally {
       setLoading(false)
     }
@@ -152,6 +177,7 @@ export function AddDeveloperDialog() {
               Cancel
             </Button>
             <Button type="submit" disabled={loading}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Creating..." : "Create Account"}
             </Button>
           </DialogFooter>

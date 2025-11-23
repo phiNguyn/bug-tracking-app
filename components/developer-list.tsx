@@ -21,6 +21,7 @@ import {
 import { MoreHorizontal, Pencil, Trash } from "lucide-react"
 import { toast } from "sonner"
 import { EditDeveloperDialog } from "./edit-developer-dialog"
+import { useCurrentUser } from "@/lib/hooks/use-current-user"
 
 interface DeveloperListProps {
   developers: Developer[]
@@ -31,6 +32,7 @@ export function DeveloperList({ developers }: DeveloperListProps) {
   const [deletingDeveloper, setDeletingDeveloper] = useState<Developer | null>(null)
   const router = useRouter()
   const supabase = createClient()
+  const { isSuperAdmin } = useCurrentUser()
 
   const handleDelete = async () => {
     if (!deletingDeveloper) return
@@ -70,24 +72,26 @@ export function DeveloperList({ developers }: DeveloperListProps) {
                   <p className="text-sm text-muted-foreground">{dev.email}</p>
                 </div>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setEditingDeveloper(dev)}>
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-red-600" onClick={() => setDeletingDeveloper(dev)}>
-                    <Trash className="mr-2 h-4 w-4" />
-                    Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {isSuperAdmin && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                      <span className="sr-only">Open menu</span>
+                      <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => setEditingDeveloper(dev)}>
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-red-600" onClick={() => setDeletingDeveloper(dev)}>
+                      <Trash className="mr-2 h-4 w-4" />
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between text-sm mt-2">

@@ -105,30 +105,32 @@ export function DeveloperLeaderboard() {
         {leaderboardData.length === 0 ? (
           <div className="p-8 text-center text-muted-foreground">Chưa có dữ liệu cho sprint này</div>
         ) : (
-          <div className="divide-y">
+          <div className="divide-y divide-border/50">
             {leaderboardData.map((entry, index) => (
               <div
                 key={entry.developerId}
-                className={`flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors ${
-                  index < 3 ? getRankBadgeColor(index) : ""
-                }`}
+                className={`flex items-center gap-3 sm:gap-4 p-4 hover:opacity-90 transition-all ${getRankBadgeColor(
+                  index,
+                )}`}
               >
-                <div className="flex-shrink-0 flex items-center justify-center">{getRankIcon(index)}</div>
+                <div className="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-background/50">
+                  {getRankIcon(index)}
+                </div>
 
                 {/* Developer Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-sm sm:text-base truncate">{entry.developerName}</p>
+                  <p className="font-bold text-base sm:text-lg truncate text-foreground">{entry.developerName}</p>
                   <p className="text-xs sm:text-sm text-muted-foreground">
                     {entry.bugCount} bug{entry.bugCount !== 1 ? "s" : ""}
                   </p>
                 </div>
 
-                {/* Penalty Amount - now the primary sorting metric */}
+                {/* Penalty Amount & Rank */}
                 <div className="text-right flex-shrink-0">
-                  <p className="font-bold text-sm sm:text-lg text-destructive">
+                  <p className="font-bold text-base sm:text-xl text-destructive">
                     {entry.totalPenalty.toLocaleString("vi-VN")} ₫
                   </p>
-                  {index < 3 && <p className="text-xs text-muted-foreground">Hạng {index + 1}</p>}
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">Hạng {index + 1}</p>
                 </div>
               </div>
             ))}

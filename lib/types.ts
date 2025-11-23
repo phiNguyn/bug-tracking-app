@@ -4,6 +4,7 @@ export interface Developer {
   email: string
   avatar_url: string | null
   created_at: string
+  role?: "user" | "super_admin"
 }
 
 export interface Sprint {

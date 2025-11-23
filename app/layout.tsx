@@ -6,6 +6,7 @@ import "./globals.css"
 import { Bug } from "lucide-react"
 import { Sidebar } from "@/components/sidebar"
 import { Toaster } from "@/components/ui/toaster"
+import { NavigationProgress } from "@/components/navigation-progress"
 
 const geistSans = Geist({
   variable: "--font-sans",
@@ -48,6 +49,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+        <NavigationProgress />
         <div className="flex min-h-screen flex-col">
           <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden">
             <div className="flex h-14 items-center px-4">

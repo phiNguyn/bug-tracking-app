@@ -1,7 +1,7 @@
 "use client"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Bug, Users, LayoutDashboard, Timer, Menu, X, BarChart3, Loader2 } from "lucide-react"
+import { Bug, Users, LayoutDashboard, Timer, Menu, X, BarChart3, Loader2, UserCircle } from "lucide-react"
 import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
@@ -43,6 +43,12 @@ export function Sidebar() {
       label: "Bugs",
       icon: Bug,
       active: pathname.startsWith("/bugs"),
+    },
+    {
+      href: "/account",
+      label: "Account",
+      icon: UserCircle,
+      active: pathname.startsWith("/account"),
     },
   ]
 

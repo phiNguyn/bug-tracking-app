@@ -3,6 +3,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DollarSign, Bug, Timer, Users } from "lucide-react"
 import { DashboardCharts } from "@/components/dashboard-charts"
 import { DashboardFilters } from "@/components/dashboard-filters"
+import { Suspense } from "react"
+import { Skeleton } from "@/components/ui/skeleton"
+
+function DashboardFiltersWrapper({
+  developers,
+  sprints,
+}: {
+  developers: Array<{ id: string; name: string }>
+  sprints: Array<{ id: string; name: string }>
+}) {
+  return (
+    <Suspense fallback={<Skeleton className="h-10 w-[400px]" />}>
+      <DashboardFilters developers={developers} sprints={sprints} />
+    </Suspense>
+  )
+}
 
 export default async function DashboardPage({
   searchParams,
@@ -85,7 +101,7 @@ export default async function DashboardPage({
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <DashboardFilters developers={developers || []} sprints={sprints || []} />
+        <DashboardFiltersWrapper developers={developers || []} sprints={sprints || []} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

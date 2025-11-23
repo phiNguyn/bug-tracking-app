@@ -1,25 +1,28 @@
-import { createClient } from "@/lib/supabase/server"
+"use client"
+
 import { BugListWithFilters } from "@/components/bug-list-with-filters"
 import { AddBugDialog } from "@/components/add-bug-dialog"
+import { useBugs } from "@/lib/queries/bugs"
+import { useDevelopers } from "@/lib/queries/developers"
+import { useSprints } from "@/lib/queries/sprints"
+import { PageHeaderSkeleton } from "@/components/page-header-skeleton"
+import { BugListSkeleton } from "@/components/bug-list-skeleton"
 
-export default async function BugsPage() {
-  const supabase = await createClient()
+export default function BugsPage() {
+  const { data: bugs, isLoading: bugsLoading } = useBugs()
+  const { data: developers, isLoading: developersLoading } = useDevelopers()
+  const { data: sprints, isLoading: sprintsLoading } = useSprints()
 
-  // Fetch bugs with related data
-  const { data: bugs } = await supabase
-    .from("bugs")
-    .select(`
-      *,
-      developer:developers(*),
-      sprint:sprints(*)
-    `)
-    .order("created_at", { ascending: false })
+  const isLoading = bugsLoading || developersLoading || sprintsLoading
 
-  // Fetch data needed for the add bug dialog
-  const { data: developers } = await supabase.from("developers").select("*").order("name")
-
-  // Fetch ALL sprints
-  const { data: sprints } = await supabase.from("sprints").select("*").order("start_date", { ascending: false })
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <PageHeaderSkeleton />
+        <BugListSkeleton />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">

@@ -1,12 +1,48 @@
-import { redirect } from "next/navigation"
-import { getCurrentDeveloper } from "@/lib/auth"
+"use client"
+
 import { AccountForm } from "@/components/account-form"
+import { useCurrentUser } from "@/lib/hooks/use-current-user"
+import { PageHeaderSkeleton } from "@/components/page-header-skeleton"
+import { Card } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
 
-export default async function AccountPage() {
-  const developer = await getCurrentDeveloper()
+export default function AccountPage() {
+  const { user, developer, isLoading } = useCurrentUser()
 
-  if (!developer) {
-    redirect("/auth/login")
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <PageHeaderSkeleton />
+        <Card className="p-6">
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <Skeleton className="h-10 w-32" />
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!user || !developer) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
+        <Card className="p-6">
+          <p className="text-muted-foreground">Please log in to view your account settings.</p>
+        </Card>
+      </div>
+    )
   }
 
   return (

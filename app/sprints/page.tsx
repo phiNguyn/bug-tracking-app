@@ -1,13 +1,22 @@
-import { createClient } from "@/lib/supabase/server"
+"use client"
+
 import { SprintList } from "@/components/sprint-list"
 import { AddSprintDialog } from "@/components/add-sprint-dialog"
+import { useSprints } from "@/lib/queries/sprints"
+import { PageHeaderSkeleton } from "@/components/page-header-skeleton"
+import { SprintListSkeleton } from "@/components/sprint-list-skeleton"
 
-export default async function SprintsPage() {
-  const supabase = await createClient()
-  const { data: sprints } = await supabase
-    .from("sprints")
-    .select("*")
-    .order("start_date", { ascending: false })
+export default function SprintsPage() {
+  const { data: sprints, isLoading } = useSprints()
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <PageHeaderSkeleton />
+        <SprintListSkeleton />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">

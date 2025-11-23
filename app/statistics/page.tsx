@@ -1,22 +1,29 @@
-import { createClient } from "@/lib/supabase/server"
+"use client"
+
 import { StatsSection } from "@/components/stats-section"
+import { useBugs } from "@/lib/queries/bugs"
+import { useDevelopers } from "@/lib/queries/developers"
+import { useSprints } from "@/lib/queries/sprints"
+import { StatsSkeletonExtended } from "@/components/stats-skeleton-extended"
 
-export default async function StatisticsPage() {
-  const supabase = await createClient()
+export default function StatisticsPage() {
+  const { data: bugs, isLoading: bugsLoading } = useBugs()
+  const { data: developers, isLoading: developersLoading } = useDevelopers()
+  const { data: sprints, isLoading: sprintsLoading } = useSprints()
 
-  // Fetch all data
-  const [{ data: bugs }, { data: developers }, { data: sprints }] = await Promise.all([
-    supabase
-      .from("bugs")
-      .select(`
-        *,
-        developer:developers(*),
-        sprint:sprints(*)
-      `)
-      .order("created_at", { ascending: false }),
-    supabase.from("developers").select("*").order("name"),
-    supabase.from("sprints").select("*").order("start_date", { ascending: false }),
-  ])
+  const isLoading = bugsLoading || developersLoading || sprintsLoading
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <div className="h-9 w-40 bg-muted animate-pulse rounded-md mb-2" />
+          <div className="h-4 w-96 bg-muted animate-pulse rounded-md" />
+        </div>
+        <StatsSkeletonExtended />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">

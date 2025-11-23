@@ -1,7 +1,9 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import {
@@ -15,8 +17,9 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus } from 'lucide-react'
+import { Plus } from "lucide-react"
 import { toast } from "sonner"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export function AddDeveloperDialog() {
   const [open, setOpen] = useState(false)
@@ -32,21 +35,41 @@ export function AddDeveloperDialog() {
     const name = formData.get("name") as string
     const email = formData.get("email") as string
     const avatar_url = formData.get("avatar_url") as string
+    const password = formData.get("password") as string
+    const role = formData.get("role") as string
 
     try {
-      const { error } = await supabase.from("developers").insert({
-        name,
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
-        avatar_url: avatar_url || null,
+        password,
+        options: {
+          emailRedirectTo: process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL || `${window.location.origin}/`,
+          data: {
+            role: role || "user",
+            name: name,
+          },
+        },
       })
 
-      if (error) throw error
+      if (authError) throw authError
 
-      toast.success("Developer added successfully")
+      if (authData.user) {
+        const { error: devError } = await supabase.from("developers").insert({
+          id: authData.user.id,
+          name,
+          email,
+          avatar_url: avatar_url || null,
+          role: role || "user",
+        })
+
+        if (devError) throw devError
+      }
+
+      toast.success("Developer added successfully! Confirmation email sent.")
       setOpen(false)
       router.refresh()
-    } catch (error) {
-      toast.error("Failed to add developer")
+    } catch (error: any) {
+      toast.error(error.message || "Failed to add developer")
       console.error(error)
     } finally {
       setLoading(false)
@@ -61,55 +84,75 @@ export function AddDeveloperDialog() {
           Add Developer
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px]">
         <form onSubmit={onSubmit}>
           <DialogHeader>
             <DialogTitle>Add Developer</DialogTitle>
             <DialogDescription>
-              Add a new developer to the team. Click save when you're done.
+              Create a new developer account. They will receive a confirmation email.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
+            <div className="grid sm:grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="sm:text-right">
+                Name <span className="text-destructive">*</span>
               </Label>
-              <Input
-                id="name"
-                name="name"
-                placeholder="John Doe"
-                className="col-span-3"
-                required
-              />
+              <Input id="name" name="name" placeholder="John Doe" className="sm:col-span-3" required />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
-                Email
+            <div className="grid sm:grid-cols-4 items-center gap-4">
+              <Label htmlFor="email" className="sm:text-right">
+                Email <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 placeholder="john@example.com"
-                className="col-span-3"
+                className="sm:col-span-3"
                 required
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="avatar_url" className="text-right">
-                Avatar URL
+            <div className="grid sm:grid-cols-4 items-center gap-4">
+              <Label htmlFor="password" className="sm:text-right">
+                Password <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="avatar_url"
-                name="avatar_url"
-                placeholder="https://..."
-                className="col-span-3"
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Min 6 characters"
+                className="sm:col-span-3"
+                minLength={6}
+                required
               />
             </div>
+            <div className="grid sm:grid-cols-4 items-center gap-4">
+              <Label htmlFor="role" className="sm:text-right">
+                Role
+              </Label>
+              <Select name="role" defaultValue="user">
+                <SelectTrigger className="sm:col-span-3">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="super_admin">Super Admin</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid sm:grid-cols-4 items-center gap-4">
+              <Label htmlFor="avatar_url" className="sm:text-right">
+                Avatar URL
+              </Label>
+              <Input id="avatar_url" name="avatar_url" placeholder="https://..." className="sm:col-span-3" />
+            </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2">
+            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+              Cancel
+            </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save changes"}
+              {loading ? "Creating..." : "Create Account"}
             </Button>
           </DialogFooter>
         </form>

@@ -18,7 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { MoreHorizontal, Pencil, Trash } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash, Link2 } from "lucide-react"
 import { toast } from "sonner"
 import { EditDeveloperDialog } from "./edit-developer-dialog"
 import { useCurrentUser } from "@/lib/hooks/use-current-user"
@@ -33,6 +33,24 @@ export function DeveloperList({ developers }: DeveloperListProps) {
   const router = useRouter()
   const supabase = createClient()
   const { isSuperAdmin } = useCurrentUser()
+
+  const handleSendMagicLink = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+        },
+      })
+
+      if (error) throw error
+
+      toast.success(`Magic link sent to ${email}`)
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send magic link")
+      console.error(error)
+    }
+  }
 
   const handleDelete = async () => {
     if (!deletingDeveloper) return
@@ -81,6 +99,10 @@ export function DeveloperList({ developers }: DeveloperListProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => handleSendMagicLink(dev.email)}>
+                      <Link2 className="mr-2 h-4 w-4" />
+                      Send Login Link
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => setEditingDeveloper(dev)}>
                       <Pencil className="mr-2 h-4 w-4" />
                       Edit

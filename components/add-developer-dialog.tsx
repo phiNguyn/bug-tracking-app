@@ -17,15 +17,35 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Loader2 } from "lucide-react"
+import { Plus, Loader2, Copy, Check, Link2 } from "lucide-react"
 import { toast } from "sonner"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export function AddDeveloperDialog() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [createdCreds, setCreatedCreds] = useState<{ email: string; password: string } | null>(null)
+  const [copied, setCopied] = useState(false)
   const router = useRouter()
   const supabase = createClient()
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      setCreatedCreds(null)
+      setCopied(false)
+    }
+    setOpen(newOpen)
+  }
+
+  const copyCredentials = () => {
+    if (!createdCreds) return
+    const text = `Email: ${createdCreds.email}\nPassword: ${createdCreds.password}\nLogin Link: ${window.location.origin}/auth/login`
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+    toast.success("Credentials copied to clipboard")
+  }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -81,18 +101,28 @@ export function AddDeveloperDialog() {
       if (devError) {
         console.error("[v0] Developer insert error:", devError)
         // Try to clean up auth user if developer creation fails
-        // Note: This may not work due to RLS, but we try anyway
         await supabase.auth.admin.deleteUser(authData.user.id).catch(() => {})
         throw new Error(`Failed to create developer profile: ${devError.message}`)
       }
 
-      console.log("[v0] Developer created successfully!")
-      toast.success("Developer added successfully! Confirmation email sent to " + email)
-      setOpen(false)
-      router.refresh()
+      console.log("[v0] Step 3: Sending Magic Link...")
+      const { error: magicLinkError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+        },
+      })
 
-      // Reset form
-      e.currentTarget.reset()
+      if (magicLinkError) {
+        console.warn("[v0] Failed to send magic link:", magicLinkError)
+        toast.warning("Developer created, but failed to send magic link.")
+      } else {
+        toast.success("Magic link sent to " + email)
+      }
+
+      console.log("[v0] Developer created successfully!")
+      setCreatedCreds({ email, password })
+      router.refresh()
     } catch (error: any) {
       console.error("[v0] Error in add developer:", error)
       toast.error(error.message || "Failed to add developer. Please check console for details.")
@@ -101,8 +131,73 @@ export function AddDeveloperDialog() {
     }
   }
 
+  if (createdCreds) {
+    return (
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogTrigger asChild>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Add Developer
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-green-600">
+              <Check className="h-5 w-5" /> Account Created Successfully
+            </DialogTitle>
+            <DialogDescription>
+              The developer account has been created and a magic login link has been sent to their email.
+            </DialogDescription>
+          </DialogHeader>
+
+          <Alert className="bg-muted border-primary/20">
+            <Link2 className="h-4 w-4" />
+            <AlertTitle>Magic Link Sent</AlertTitle>
+            <AlertDescription>
+              A login link has been sent to {createdCreds.email}. They can click it to log in instantly.
+            </AlertDescription>
+          </Alert>
+
+          <div className="space-y-4 my-4">
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <div className="flex items-center gap-2">
+                <Input value={createdCreds.email} readOnly className="bg-muted font-mono" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Password</Label>
+              <div className="flex items-center gap-2">
+                <Input value={createdCreds.password} readOnly className="bg-muted font-mono" />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Please copy and share this password with the developer securely. We cannot email it for security
+                reasons.
+              </p>
+            </div>
+          </div>
+
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full sm:w-auto bg-transparent"
+              onClick={copyCredentials}
+            >
+              {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
+              {copied ? "Copied" : "Copy Details"}
+            </Button>
+            <Button type="button" className="w-full sm:w-auto" onClick={() => setOpen(false)}>
+              Done
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />

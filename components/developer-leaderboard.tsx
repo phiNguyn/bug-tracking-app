@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Trophy, Medal, Award } from "lucide-react"
+import { Trophy, Medal, Award, TrendingUp } from "lucide-react"
 import { useState } from "react"
 import { useSprints, useActiveSprint } from "@/lib/queries/sprints"
 import { useBugs } from "@/lib/queries/bugs"
@@ -53,30 +53,25 @@ export function DeveloperLeaderboard() {
     leaderboardData.push(...Array.from(devMap.values()))
   }
 
-  // Sort by bug count (descending), then by penalty (descending)
   leaderboardData.sort((a, b) => {
-    if (b.bugCount !== a.bugCount) return b.bugCount - a.bugCount
-    return b.totalPenalty - a.totalPenalty
+    if (b.totalPenalty !== a.totalPenalty) return b.totalPenalty - a.totalPenalty
+    return b.bugCount - a.bugCount
   })
 
   const getRankIcon = (index: number) => {
-    if (index === 0) return <Trophy className="h-5 w-5 text-yellow-500" />
-    if (index === 1) return <Medal className="h-5 w-5 text-gray-400" />
-    if (index === 2) return <Award className="h-5 w-5 text-amber-600" />
-    return (
-      <span className="h-5 w-5 flex items-center justify-center text-sm font-bold text-muted-foreground">
-        #{index + 1}
-      </span>
-    )
+    if (index === 0) return <Trophy className="h-6 w-6 text-[hsl(var(--coffee-gold))]" />
+    if (index === 1) return <Medal className="h-6 w-6 text-[hsl(var(--coffee-silver))]" />
+    if (index === 2) return <Award className="h-6 w-6 text-[hsl(var(--coffee-bronze))]" />
+    return <TrendingUp className="h-5 w-5 text-muted-foreground" />
   }
 
   const getRankBadgeColor = (index: number) => {
     if (index === 0)
-      return "bg-gradient-to-br from-yellow-100 to-yellow-200 dark:from-yellow-900/30 dark:to-yellow-800/30 border-yellow-300 dark:border-yellow-700"
+      return "bg-gradient-to-br from-amber-50 to-yellow-100 dark:from-amber-950/40 dark:to-yellow-900/40 border-amber-300 dark:border-amber-700/50"
     if (index === 1)
-      return "bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800/30 dark:to-gray-700/30 border-gray-300 dark:border-gray-600"
+      return "bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900/40 dark:to-gray-800/40 border-slate-300 dark:border-slate-600/50"
     if (index === 2)
-      return "bg-gradient-to-br from-amber-100 to-amber-200 dark:from-amber-900/30 dark:to-amber-800/30 border-amber-300 dark:border-amber-700"
+      return "bg-gradient-to-br from-orange-50 to-amber-100 dark:from-orange-950/40 dark:to-amber-900/40 border-orange-300 dark:border-orange-700/50"
     return "bg-card border-border"
   }
 
@@ -118,21 +113,7 @@ export function DeveloperLeaderboard() {
                   index < 3 ? getRankBadgeColor(index) : ""
                 }`}
               >
-                {/* Rank Badge */}
-                <div className="flex-shrink-0">
-                  {index < 3 ? (
-                    <div className="relative">
-                      {getRankIcon(index)}
-                      <div className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                        {index + 1}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-sm font-semibold">
-                      {index + 1}
-                    </div>
-                  )}
-                </div>
+                <div className="flex-shrink-0 flex items-center justify-center">{getRankIcon(index)}</div>
 
                 {/* Developer Info */}
                 <div className="flex-1 min-w-0">
@@ -142,11 +123,12 @@ export function DeveloperLeaderboard() {
                   </p>
                 </div>
 
-                {/* Penalty Amount */}
+                {/* Penalty Amount - now the primary sorting metric */}
                 <div className="text-right flex-shrink-0">
                   <p className="font-bold text-sm sm:text-lg text-destructive">
                     {entry.totalPenalty.toLocaleString("vi-VN")} ₫
                   </p>
+                  {index < 3 && <p className="text-xs text-muted-foreground">Hạng {index + 1}</p>}
                 </div>
               </div>
             ))}

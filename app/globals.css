@@ -116,6 +116,10 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  /* Add medal colors for leaderboard rankings */
+  --coffee-gold: 45 93% 47%;
+  --coffee-silver: 240 5% 65%;
+  --coffee-bronze: 28 80% 52%;
 }
 
 @layer base {

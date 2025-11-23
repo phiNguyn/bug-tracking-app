@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { useToast } from "@/hooks/use-toast"
 
 export function LoginForm() {
   const [mode, setMode] = useState<"login" | "signup">("login")
@@ -19,9 +19,8 @@ export function LoginForm() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
   const router = useRouter()
+  const { toast } = useToast()
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -31,8 +30,6 @@ export function LoginForm() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
-    setSuccess(null)
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -44,10 +41,22 @@ export function LoginForm() {
         throw error
       }
 
-      router.refresh()
-      router.push("/")
+      toast({
+        title: "Login successful!",
+        description: "Welcome back to BugTracker",
+      })
+
+      // Small delay để user nhìn thấy toast
+      setTimeout(() => {
+        router.push("/")
+        router.refresh()
+      }, 500)
     } catch (err: any) {
-      setError(err.message)
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: err.message || "Invalid email or password",
+      })
     } finally {
       setLoading(false)
     }
@@ -56,18 +65,24 @@ export function LoginForm() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    setError(null)
-    setSuccess(null)
 
     // Validate passwords match
     if (password !== confirmPassword) {
-      setError("Passwords do not match")
+      toast({
+        variant: "destructive",
+        title: "Validation error",
+        description: "Passwords do not match",
+      })
       setLoading(false)
       return
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters")
+      toast({
+        variant: "destructive",
+        title: "Validation error",
+        description: "Password must be at least 6 characters",
+      })
       setLoading(false)
       return
     }
@@ -85,12 +100,25 @@ export function LoginForm() {
         throw error
       }
 
-      setSuccess("Account created! Check your email to confirm your account.")
+      toast({
+        title: "Account created!",
+        description: "Check your email to confirm your account.",
+      })
+
       setEmail("")
       setPassword("")
       setConfirmPassword("")
+
+      // Chuyển về login mode sau 2s
+      setTimeout(() => {
+        setMode("login")
+      }, 2000)
     } catch (err: any) {
-      setError(err.message)
+      toast({
+        variant: "destructive",
+        title: "Sign up failed",
+        description: err.message,
+      })
     } finally {
       setLoading(false)
     }
@@ -106,16 +134,6 @@ export function LoginForm() {
       </CardHeader>
       <CardContent>
         <form onSubmit={mode === "login" ? handleLogin : handleSignUp} className="space-y-4">
-          {error && (
-            <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
-          {success && (
-            <Alert className="border-green-200 bg-green-50">
-              <AlertDescription className="text-green-800">{success}</AlertDescription>
-            </Alert>
-          )}
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -164,8 +182,6 @@ export function LoginForm() {
           className="text-sm text-muted-foreground"
           onClick={() => {
             setMode(mode === "login" ? "signup" : "login")
-            setError(null)
-            setSuccess(null)
           }}
           disabled={loading}
         >

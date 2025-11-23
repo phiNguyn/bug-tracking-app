@@ -99,10 +99,21 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
   }, [bugs])
 
   // Status distribution
+  const COFFEE_COLORS = {
+    espresso: "hsl(var(--chart-1))", // Espresso brown
+    mocha: "hsl(var(--chart-2))", // Mocha
+    latte: "hsl(var(--chart-3))", // Latte - light
+    cappuccino: "hsl(var(--chart-4))", // Cappuccino
+    americano: "hsl(var(--chart-5))", // Americano
+    pending: "hsl(25 95% 53%)", // Warm orange for pending
+    paid: "hsl(142 76% 36%)", // Green for paid
+    waived: "hsl(215 16% 47%)", // Neutral gray for waived
+  }
+
   const statusData = [
-    { name: "Pending", value: stats.pending, color: "#ef4444" },
-    { name: "Paid", value: stats.paid, color: "#22c55e" },
-    { name: "Waived", value: stats.waived, color: "#a1a5af" },
+    { name: "Chưa đóng", value: stats.pending, color: COFFEE_COLORS.pending },
+    { name: "Đã đóng", value: stats.paid, color: COFFEE_COLORS.paid },
+    { name: "Miễn phí", value: stats.waived, color: COFFEE_COLORS.waived },
   ].filter((d) => d.value > 0)
 
   return (
@@ -240,13 +251,26 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={developerData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis
+                  dataKey="name"
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "var(--radius)",
+                  }}
+                />
                 <Legend />
-                <Bar dataKey="bugs" fill="#3b82f6" name="Bug Count" />
-                <Bar dataKey="penalty" fill="#ef4444" name="Penalty (VND)" />
+                <Bar dataKey="bugs" fill={COFFEE_COLORS.espresso} name="Bug Count" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="penalty" fill={COFFEE_COLORS.mocha} name="Penalty (VND)" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -261,13 +285,26 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={sprintData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis
+                  dataKey="name"
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                />
+                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "var(--radius)",
+                  }}
+                />
                 <Legend />
-                <Bar dataKey="bugs" fill="#8b5cf6" name="Bug Count" />
-                <Bar dataKey="penalty" fill="#f59e0b" name="Penalty (VND)" />
+                <Bar dataKey="bugs" fill={COFFEE_COLORS.latte} name="Bug Count" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="penalty" fill={COFFEE_COLORS.cappuccino} name="Penalty (VND)" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -289,7 +326,7 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
                     cy="50%"
                     labelLine={false}
                     label={({ name, value }) => `${name}: ${value}`}
-                    outerRadius={80}
+                    outerRadius={100}
                     fill="#8884d8"
                     dataKey="value"
                   >
@@ -297,7 +334,13 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: "var(--radius)",
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>

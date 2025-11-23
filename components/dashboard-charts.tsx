@@ -10,15 +10,15 @@ interface DashboardChartsProps {
   bugsByStatus: Array<{ penalty_status: string; count: number }>
 }
 
-const CHART_COLORS = {
-  primary: "hsl(var(--chart-1))",
-  secondary: "hsl(var(--chart-2))",
-  tertiary: "hsl(var(--chart-3))",
-  quaternary: "hsl(var(--chart-4))",
-  quinary: "hsl(var(--chart-5))",
-  paid: "hsl(var(--chart-3))", // Latte - light and positive
-  pending: "hsl(var(--chart-1))", // Espresso - strong attention
-  waived: "hsl(var(--chart-4))", // Cappuccino - neutral
+const COFFEE_COLORS = {
+  espresso: "hsl(var(--chart-1))", // Rich brown
+  mocha: "hsl(var(--chart-2))", // Medium brown
+  latte: "hsl(var(--chart-3))", // Light brown
+  cappuccino: "hsl(var(--chart-4))", // Tan
+  americano: "hsl(var(--chart-5))", // Dark brown
+  paid: "hsl(142 76% 36%)", // Green
+  pending: "hsl(25 95% 53%)", // Orange
+  waived: "hsl(215 16% 47%)", // Gray
 }
 
 export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: DashboardChartsProps) {
@@ -41,7 +41,7 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
   }))
 
   return (
-    <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+    <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
       {/* Bugs by Developer Chart */}
       <Card className="col-span-1">
         <CardHeader>
@@ -52,7 +52,7 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
             config={{
               bugs: {
                 label: "Số bugs",
-                color: CHART_COLORS.primary,
+                color: COFFEE_COLORS.espresso,
               },
             }}
             className="h-[300px] w-full"
@@ -71,7 +71,7 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
                 />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="bugs" fill={CHART_COLORS.primary} radius={[8, 8, 0, 0]} />
+                <Bar dataKey="bugs" fill={COFFEE_COLORS.espresso} radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -88,15 +88,15 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
             config={{
               paid: {
                 label: "Đã đóng",
-                color: CHART_COLORS.paid,
+                color: COFFEE_COLORS.paid,
               },
               pending: {
                 label: "Chưa đóng",
-                color: CHART_COLORS.pending,
+                color: COFFEE_COLORS.pending,
               },
               waived: {
                 label: "Miễn phí",
-                color: CHART_COLORS.waived,
+                color: COFFEE_COLORS.waived,
               },
             }}
             className="h-[300px] w-full"
@@ -118,10 +118,10 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
                       key={`cell-${index}`}
                       fill={
                         entry.status === "paid"
-                          ? CHART_COLORS.paid
+                          ? COFFEE_COLORS.paid
                           : entry.status === "pending"
-                            ? CHART_COLORS.pending
-                            : CHART_COLORS.waived
+                            ? COFFEE_COLORS.pending
+                            : COFFEE_COLORS.waived
                       }
                     />
                   ))}
@@ -134,8 +134,8 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
         </CardContent>
       </Card>
 
-      {/* Bugs by Sprint Chart - Full Width */}
-      <Card className="col-span-1 lg:col-span-2">
+      {/* Bugs by Sprint Chart - Full Width on mobile, 2 cols on desktop */}
+      <Card className="col-span-1 md:col-span-2">
         <CardHeader>
           <CardTitle>Bugs theo Sprint</CardTitle>
         </CardHeader>
@@ -144,7 +144,7 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
             config={{
               bugs: {
                 label: "Số bugs",
-                color: CHART_COLORS.secondary,
+                color: COFFEE_COLORS.mocha,
               },
             }}
             className="h-[300px] w-full"
@@ -160,7 +160,7 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
                 />
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="bugs" fill={CHART_COLORS.secondary} radius={[8, 8, 0, 0]} />
+                <Bar dataKey="bugs" fill={COFFEE_COLORS.mocha} radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>

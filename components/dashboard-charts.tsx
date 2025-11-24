@@ -11,11 +11,11 @@ interface DashboardChartsProps {
 }
 
 const COFFEE_COLORS = {
-  espresso: "hsl(var(--chart-1))", // Rich brown
-  mocha: "hsl(var(--chart-2))", // Medium brown
-  latte: "hsl(var(--chart-3))", // Light brown
-  cappuccino: "hsl(var(--chart-4))", // Tan
-  americano: "hsl(var(--chart-5))", // Dark brown
+  espresso: "var(--chart-1)", // Rich brown
+  mocha: "var(--chart-2)", // Medium brown
+  latte: "var(--chart-3)", // Light brown
+  cappuccino: "var(--chart-4)", // Tan
+  americano: "var(--chart-5)", // Dark brown
   paid: "hsl(142 76% 36%)", // Green
   pending: "hsl(25 95% 53%)", // Orange
   waived: "hsl(215 16% 47%)", // Gray

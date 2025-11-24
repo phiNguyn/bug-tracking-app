@@ -59,20 +59,17 @@ export function DeveloperLeaderboard() {
   })
 
   const getRankIcon = (index: number) => {
-    if (index === 0) return <Trophy className="h-6 w-6 text-[hsl(var(--coffee-gold))]" />
-    if (index === 1) return <Medal className="h-6 w-6 text-[hsl(var(--coffee-silver))]" />
-    if (index === 2) return <Award className="h-6 w-6 text-[hsl(var(--coffee-bronze))]" />
+    if (index === 0) return <Trophy className="h-6 w-6 text-[#FFD700]" />
+    if (index === 1) return <Medal className="h-6 w-6 text-[#C0C0C0]" />
+    if (index === 2) return <Award className="h-6 w-6 text-[#CD7F32]" />
     return <TrendingUp className="h-5 w-5 text-muted-foreground" />
   }
 
   const getRankBadgeColor = (index: number) => {
-    if (index === 0)
-      return "bg-gradient-to-br from-amber-50 to-yellow-100 dark:from-amber-950/40 dark:to-yellow-900/40 border-amber-300 dark:border-amber-700/50"
-    if (index === 1)
-      return "bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900/40 dark:to-gray-800/40 border-slate-300 dark:border-slate-600/50"
-    if (index === 2)
-      return "bg-gradient-to-br from-orange-50 to-amber-100 dark:from-orange-950/40 dark:to-amber-900/40 border-orange-300 dark:border-orange-700/50"
-    return "bg-card border-border"
+    if (index === 0) return "bg-[#FFD700] border-amber-300 dark:border-amber-700/50"
+    if (index === 1) return "bg-[#C0C0C0] border-slate-300 dark:border-slate-600/50"
+    if (index === 2) return "bg-[#CD7F32] border-orange-300 dark:border-orange-700/50"
+    return "bg-[#B0BEC5] border-border"
   }
 
   if (sprintsLoading || bugsLoading) {
@@ -109,7 +106,7 @@ export function DeveloperLeaderboard() {
             {leaderboardData.map((entry, index) => (
               <div
                 key={entry.developerId}
-                className={`flex items-center gap-4 p-4 hover:bg-muted/50 transition-colors ${
+                className={`flex items-center gap-4 p-4 hover:opacity-90 transition-opacity ${
                   index < 3 ? getRankBadgeColor(index) : ""
                 }`}
               >

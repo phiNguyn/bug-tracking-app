@@ -1,29 +1,27 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
-import { useRouter } from 'next/navigation'
+import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, CalendarIcon } from 'lucide-react'
+import { Plus, CalendarIcon } from "lucide-react"
 import { toast } from "sonner"
 import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 export function AddSprintDialog() {
@@ -36,13 +34,13 @@ export function AddSprintDialog() {
     from: undefined,
     to: undefined,
   })
-  
+
   const router = useRouter()
   const supabase = createClient()
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    
+
     if (!dateRange.from || !dateRange.to) {
       toast.error("Please select a date range")
       return
@@ -75,33 +73,25 @@ export function AddSprintDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
           Create Sprint
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      </SheetTrigger>
+      <SheetContent>
         <form onSubmit={onSubmit}>
-          <DialogHeader>
-            <DialogTitle>Create Sprint</DialogTitle>
-            <DialogDescription>
-              Set up a new sprint with a name and duration.
-            </DialogDescription>
-          </DialogHeader>
+          <SheetHeader>
+            <SheetTitle>Create Sprint</SheetTitle>
+            <SheetDescription>Set up a new sprint with a name and duration.</SheetDescription>
+          </SheetHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
                 Name
               </Label>
-              <Input
-                id="name"
-                name="name"
-                placeholder="Sprint 10"
-                className="col-span-3"
-                required
-              />
+              <Input id="name" name="name" placeholder="Sprint 10" className="col-span-3" required />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label className="text-right">Duration</Label>
@@ -113,15 +103,14 @@ export function AddSprintDialog() {
                       variant={"outline"}
                       className={cn(
                         "w-full justify-start text-left font-normal",
-                        !dateRange.from && "text-muted-foreground"
+                        !dateRange.from && "text-muted-foreground",
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {dateRange.from ? (
                         dateRange.to ? (
                           <>
-                            {format(dateRange.from, "LLL dd, y")} -{" "}
-                            {format(dateRange.to, "LLL dd, y")}
+                            {format(dateRange.from, "LLL dd, y")} - {format(dateRange.to, "LLL dd, y")}
                           </>
                         ) : (
                           format(dateRange.from, "LLL dd, y")
@@ -145,13 +134,13 @@ export function AddSprintDialog() {
               </div>
             </div>
           </div>
-          <DialogFooter>
+          <SheetFooter>
             <Button type="submit" disabled={loading}>
               {loading ? "Creating..." : "Create Sprint"}
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }

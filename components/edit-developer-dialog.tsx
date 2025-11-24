@@ -7,14 +7,7 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import type { Developer } from "@/lib/types"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
@@ -63,13 +56,13 @@ export function EditDeveloperDialog({ developer, open, onOpenChange }: EditDevel
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent>
         <form onSubmit={onSubmit}>
-          <DialogHeader>
-            <DialogTitle>Edit Developer</DialogTitle>
-            <DialogDescription>Update developer details. Click save when you're done.</DialogDescription>
-          </DialogHeader>
+          <SheetHeader>
+            <SheetTitle>Edit Developer</SheetTitle>
+            <SheetDescription>Update developer details. Click save when you're done.</SheetDescription>
+          </SheetHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
@@ -102,13 +95,13 @@ export function EditDeveloperDialog({ developer, open, onOpenChange }: EditDevel
               />
             </div>
           </div>
-          <DialogFooter>
+          <SheetFooter>
             <Button type="submit" disabled={loading}>
               {loading ? "Saving..." : "Save changes"}
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }

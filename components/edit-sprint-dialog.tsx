@@ -7,14 +7,7 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import type { Sprint } from "@/lib/types"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CalendarIcon } from "lucide-react"
@@ -80,13 +73,13 @@ export function EditSprintDialog({ sprint, open, onOpenChange }: EditSprintDialo
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent>
         <form onSubmit={onSubmit}>
-          <DialogHeader>
-            <DialogTitle>Edit Sprint</DialogTitle>
-            <DialogDescription>Update sprint details.</DialogDescription>
-          </DialogHeader>
+          <SheetHeader>
+            <SheetTitle>Edit Sprint</SheetTitle>
+            <SheetDescription>Update sprint details.</SheetDescription>
+          </SheetHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
@@ -135,13 +128,13 @@ export function EditSprintDialog({ sprint, open, onOpenChange }: EditSprintDialo
               </div>
             </div>
           </div>
-          <DialogFooter>
+          <SheetFooter>
             <Button type="submit" disabled={loading}>
               {loading ? "Saving..." : "Save changes"}
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }

@@ -7,14 +7,7 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import type { Developer, Sprint, BugWithDetails } from "@/lib/types"
 import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -75,15 +68,15 @@ export function EditBugDialog({ bug, developers, sprints, open, onOpenChange }: 
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="overflow-y-auto">
         <form onSubmit={onSubmit}>
-          <DialogHeader className="mb-6">
-            <DialogTitle className="text-2xl">Edit Bug</DialogTitle>
-            <DialogDescription className="text-base">
+          <SheetHeader className="mb-6">
+            <SheetTitle className="text-2xl">Edit Bug</SheetTitle>
+            <SheetDescription className="text-base">
               Update bug details, developer assignment, sprint, and penalty status.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           <div className="space-y-5">
             {/* Title Field */}
@@ -196,16 +189,16 @@ export function EditBugDialog({ bug, developers, sprints, open, onOpenChange }: 
             </div>
           </div>
 
-          <DialogFooter className="mt-8 gap-2">
+          <SheetFooter className="mt-8 gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button type="submit" disabled={loading} className="w-full sm:w-auto">
               {loading ? "Saving..." : "Save changes"}
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }

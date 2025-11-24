@@ -25,11 +25,11 @@
   --border: oklch(0.88 0.02 70);
   --input: oklch(0.88 0.02 70);
   --ring: oklch(0.45 0.08 55);
-  --chart-1: oklch(0.837 0.128 66.29);
-  --chart-2: oklch(0.705 0.213 47.604);
-  --chart-3: oklch(0.646 0.222 41.116);
-  --chart-4: oklch(0.553 0.195 38.402);
-  --chart-5: oklch(0.47 0.157 37.304);
+  --chart-1: oklch(0.55 0.12 55); /* Espresso */
+  --chart-2: oklch(0.65 0.1 60); /* Mocha */
+  --chart-3: oklch(0.75 0.08 65); /* Latte */
+  --chart-4: oklch(0.7 0.06 50); /* Cappuccino */
+  --chart-5: oklch(0.6 0.09 58); /* Americano */
   --radius: 0.5rem;
   --sidebar: oklch(0.96 0.01 75);
   --sidebar-foreground: oklch(0.25 0.02 50);
@@ -62,11 +62,11 @@
   --border: oklch(0.3 0.02 52);
   --input: oklch(0.3 0.02 52);
   --ring: oklch(0.75 0.06 60);
-  --chart-1: oklch(0.837 0.128 66.29);
-  --chart-2: oklch(0.705 0.213 47.604);
-  --chart-3: oklch(0.646 0.222 41.116);
-  --chart-4: oklch(0.553 0.195 38.402);
-  --chart-5: oklch(0.47 0.157 37.304);
+  --chart-1: oklch(0.65 0.12 55);
+  --chart-2: oklch(0.7 0.1 60);
+  --chart-3: oklch(0.75 0.08 65);
+  --chart-4: oklch(0.68 0.09 58);
+  --chart-5: oklch(0.62 0.11 53);
   --sidebar: oklch(0.18 0.02 50);
   --sidebar-foreground: oklch(0.95 0.01 75);
   --sidebar-primary: oklch(0.75 0.06 60);

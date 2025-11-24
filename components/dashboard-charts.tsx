@@ -1,76 +1,44 @@
-"use client";
+"use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { config } from "../middleware";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, PieChart, Pie, Cell, Legend } from "recharts"
 
 interface DashboardChartsProps {
-  bugsByDev: Array<{
-    developer: { name: string };
-    count: number;
-    penalty: number;
-  }>;
-  bugsBySprint: Array<{
-    sprint: { name: string };
-    count: number;
-    penalty: number;
-  }>;
-  bugsByStatus: Array<{ penalty_status: string; count: number }>;
+  bugsByDev: Array<{ developer: { name: string }; count: number; penalty: number }>
+  bugsBySprint: Array<{ sprint: { name: string }; count: number; penalty: number }>
+  bugsByStatus: Array<{ penalty_status: string; count: number }>
 }
 
 const COFFEE_COLORS = {
-  espresso: "var(--chart-1)", // Rich brown
-  mocha: "var(--chart-2)", // Medium brown
-  latte: "var(--chart-3)", // Light brown
-  cappuccino: "var(--chart-4)", // Tan
-  americano: "var(--chart-5)", // Dark brown
+  espresso: "hsl(var(--chart-1))", // Rich brown
+  mocha: "hsl(var(--chart-2))", // Medium brown
+  latte: "hsl(var(--chart-3))", // Light brown
+  cappuccino: "hsl(var(--chart-4))", // Tan
+  americano: "hsl(var(--chart-5))", // Dark brown
   paid: "hsl(142 76% 36%)", // Green
   pending: "hsl(25 95% 53%)", // Orange
   waived: "hsl(215 16% 47%)", // Gray
-};
+}
 
-export function DashboardCharts({
-  bugsByDev,
-  bugsBySprint,
-  bugsByStatus,
-}: DashboardChartsProps) {
+export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: DashboardChartsProps) {
   const devChartData = bugsByDev.map((item) => ({
     name: item.developer.name,
     bugs: item.count,
     penalty: item.penalty,
-  }));
+  }))
 
   const sprintChartData = bugsBySprint.map((item) => ({
     name: item.sprint.name,
     bugs: item.count,
     penalty: item.penalty,
-  }));
+  }))
 
   const statusChartData = bugsByStatus.map((item) => ({
-    name:
-      item.penalty_status === "paid"
-        ? "Đã đóng"
-        : item.penalty_status === "pending"
-        ? "Chưa đóng"
-        : "Miễn phí",
+    name: item.penalty_status === "paid" ? "Đã đóng" : item.penalty_status === "pending" ? "Chưa đóng" : "Miễn phí",
     value: item.count,
     status: item.penalty_status,
-  }));
+  }))
 
   return (
     <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
@@ -89,10 +57,7 @@ export function DashboardCharts({
             className="h-[350px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={devChartData}
-                margin={{ bottom: 60, left: 10, right: 10, top: 10 }}
-              >
+              <BarChart data={devChartData} margin={{ bottom: 60, left: 10, right: 10, top: 10 }}>
                 <XAxis
                   dataKey="name"
                   stroke="hsl(var(--muted-foreground))"
@@ -110,16 +75,8 @@ export function DashboardCharts({
                   axisLine={false}
                   allowDecimals={false}
                 />
-                <ChartTooltip
-                  content={<ChartTooltipContent />}
-                  cursor={{ fill: "hsl(var(--muted) / 0.1)" }}
-                />
-                <Bar
-                  dataKey="bugs"
-                  fill={COFFEE_COLORS.espresso}
-                  radius={[8, 8, 0, 0]}
-                  maxBarSize={60}
-                />
+                <ChartTooltip content={<ChartTooltipContent />} cursor={{ fill: "hsl(var(--muted) / 0.1)" }} />
+                <Bar dataKey="bugs" fill={COFFEE_COLORS.espresso} radius={[8, 8, 0, 0]} maxBarSize={60} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -127,7 +84,7 @@ export function DashboardCharts({
       </Card>
 
       {/* Bugs by Sprint Chart - Full Width on mobile, 2 cols on desktop */}
-      <Card className="col-span-1">
+      <Card className="col-span-1 md:col-span-2">
         <CardHeader>
           <CardTitle>Bugs theo Sprint</CardTitle>
         </CardHeader>
@@ -142,10 +99,7 @@ export function DashboardCharts({
             className="h-[350px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={sprintChartData}
-                margin={{ bottom: 20, left: 10, right: 10, top: 10 }}
-              >
+              <BarChart data={sprintChartData} margin={{ bottom: 20, left: 10, right: 10, top: 10 }}>
                 <XAxis
                   dataKey="name"
                   stroke="hsl(var(--muted-foreground))"
@@ -160,16 +114,8 @@ export function DashboardCharts({
                   axisLine={false}
                   allowDecimals={false}
                 />
-                <ChartTooltip
-                  content={<ChartTooltipContent />}
-                  cursor={{ fill: "hsl(var(--muted) / 0.1)" }}
-                />
-                <Bar
-                  dataKey="bugs"
-                  fill={COFFEE_COLORS.mocha}
-                  radius={[8, 8, 0, 0]}
-                  maxBarSize={80}
-                />
+                <ChartTooltip content={<ChartTooltipContent />} cursor={{ fill: "hsl(var(--muted) / 0.1)" }} />
+                <Bar dataKey="bugs" fill={COFFEE_COLORS.mocha} radius={[8, 8, 0, 0]} maxBarSize={80} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -218,8 +164,8 @@ export function DashboardCharts({
                         entry.status === "paid"
                           ? COFFEE_COLORS.paid
                           : entry.status === "pending"
-                          ? COFFEE_COLORS.pending
-                          : COFFEE_COLORS.waived
+                            ? COFFEE_COLORS.pending
+                            : COFFEE_COLORS.waived
                       }
                     />
                   ))}
@@ -232,5 +178,5 @@ export function DashboardCharts({
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

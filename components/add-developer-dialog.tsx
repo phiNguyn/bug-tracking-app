@@ -7,14 +7,14 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Plus, Loader2, Copy, Check, Link2 } from "lucide-react"
@@ -133,24 +133,24 @@ export function AddDeveloperDialog() {
 
   if (createdCreds) {
     return (
-      <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogTrigger asChild>
+      <Sheet open={open} onOpenChange={handleOpenChange}>
+        <SheetTrigger asChild>
           <Button>
             <Plus className="mr-2 h-4 w-4" />
             Add Developer
           </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-green-600">
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2 text-green-600">
               <Check className="h-5 w-5" /> Account Created Successfully
-            </DialogTitle>
-            <DialogDescription>
+            </SheetTitle>
+            <SheetDescription>
               The developer account has been created and a magic login link has been sent to their email.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
-          <Alert className="bg-muted border-primary/20">
+          <Alert className="bg-muted border-primary/20 mt-4">
             <Link2 className="h-4 w-4" />
             <AlertTitle>Magic Link Sent</AlertTitle>
             <AlertDescription>
@@ -177,7 +177,7 @@ export function AddDeveloperDialog() {
             </div>
           </div>
 
-          <DialogFooter className="flex-col sm:flex-row gap-2">
+          <SheetFooter className="flex-col sm:flex-row gap-2">
             <Button
               type="button"
               variant="outline"
@@ -190,28 +190,26 @@ export function AddDeveloperDialog() {
             <Button type="button" className="w-full sm:w-auto" onClick={() => setOpen(false)}>
               Done
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     )
   }
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
           Add Developer
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      </SheetTrigger>
+      <SheetContent className="overflow-y-auto">
         <form onSubmit={onSubmit}>
-          <DialogHeader>
-            <DialogTitle>Add Developer</DialogTitle>
-            <DialogDescription>
-              Create a new developer account. They will receive a confirmation email.
-            </DialogDescription>
-          </DialogHeader>
+          <SheetHeader>
+            <SheetTitle>Add Developer</SheetTitle>
+            <SheetDescription>Create a new developer account. They will receive a confirmation email.</SheetDescription>
+          </SheetHeader>
           <div className="grid gap-4 py-4">
             <div className="grid sm:grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="sm:text-right">
@@ -267,7 +265,7 @@ export function AddDeveloperDialog() {
               <Input id="avatar_url" name="avatar_url" placeholder="https://..." className="sm:col-span-3" />
             </div>
           </div>
-          <DialogFooter className="gap-2">
+          <SheetFooter className="gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
               Cancel
             </Button>
@@ -275,9 +273,9 @@ export function AddDeveloperDialog() {
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Creating..." : "Create Account"}
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }

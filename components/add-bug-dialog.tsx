@@ -8,14 +8,14 @@ import { createClient } from "@/lib/supabase/client"
 import type { Developer, Sprint } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -71,21 +71,21 @@ export function AddBugDialog({ developers, sprints }: AddBugDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
         <Button>
           <Plus className="mr-2 h-4 w-4" />
           Record Bug
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+      </SheetTrigger>
+      <SheetContent className="overflow-y-auto">
         <form onSubmit={onSubmit}>
-          <DialogHeader className="mb-6">
-            <DialogTitle className="text-2xl">Record New Bug</DialogTitle>
-            <DialogDescription className="text-base">
+          <SheetHeader className="mb-6">
+            <SheetTitle className="text-2xl">Record New Bug</SheetTitle>
+            <SheetDescription className="text-base">
               Log a bug, assign a developer, select a sprint, and set the penalty amount.
-            </DialogDescription>
-          </DialogHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           <div className="space-y-5">
             {/* Title Field */}
@@ -189,16 +189,16 @@ export function AddBugDialog({ developers, sprints }: AddBugDialogProps) {
             </div>
           </div>
 
-          <DialogFooter className="mt-8 gap-2">
+          <SheetFooter className="mt-8 gap-2">
             <Button type="button" variant="outline" onClick={() => setOpen(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
             <Button type="submit" disabled={loading} className="w-full sm:w-auto">
               {loading ? "Recording..." : "Record Bug"}
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   )
 }

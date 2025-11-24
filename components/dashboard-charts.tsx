@@ -42,7 +42,6 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
 
   return (
     <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-      {/* Bugs by Developer Chart */}
       <Card className="col-span-1">
         <CardHeader>
           <CardTitle>Bugs theo Developer</CardTitle>
@@ -55,23 +54,68 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
                 color: COFFEE_COLORS.espresso,
               },
             }}
-            className="h-[300px] w-full"
+            className="h-[350px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={devChartData}>
+              <BarChart data={devChartData} margin={{ bottom: 60, left: 10, right: 10, top: 10 }}>
                 <XAxis
                   dataKey="name"
                   stroke="hsl(var(--muted-foreground))"
-                  fontSize={12}
+                  fontSize={11}
                   tickLine={false}
                   axisLine={false}
                   angle={-45}
                   textAnchor="end"
                   height={80}
                 />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="bugs" fill={COFFEE_COLORS.espresso} radius={[8, 8, 0, 0]} />
+                <YAxis
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  allowDecimals={false}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} cursor={{ fill: "hsl(var(--muted) / 0.1)" }} />
+                <Bar dataKey="bugs" fill={COFFEE_COLORS.espresso} radius={[8, 8, 0, 0]} maxBarSize={60} />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      {/* Bugs by Sprint Chart - Full Width on mobile, 2 cols on desktop */}
+      <Card className="col-span-1 md:col-span-2">
+        <CardHeader>
+          <CardTitle>Bugs theo Sprint</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer
+            config={{
+              bugs: {
+                label: "Số bugs",
+                color: COFFEE_COLORS.mocha,
+              },
+            }}
+            className="h-[350px] w-full"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={sprintChartData} margin={{ bottom: 20, left: 10, right: 10, top: 10 }}>
+                <XAxis
+                  dataKey="name"
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="hsl(var(--muted-foreground))"
+                  fontSize={12}
+                  tickLine={false}
+                  axisLine={false}
+                  allowDecimals={false}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} cursor={{ fill: "hsl(var(--muted) / 0.1)" }} />
+                <Bar dataKey="bugs" fill={COFFEE_COLORS.mocha} radius={[8, 8, 0, 0]} maxBarSize={80} />
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
@@ -99,7 +143,7 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
                 color: COFFEE_COLORS.waived,
               },
             }}
-            className="h-[300px] w-full"
+            className="h-[350px] w-full"
           >
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -129,39 +173,6 @@ export function DashboardCharts({ bugsByDev, bugsBySprint, bugsByStatus }: Dashb
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <Legend />
               </PieChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-
-      {/* Bugs by Sprint Chart - Full Width on mobile, 2 cols on desktop */}
-      <Card className="col-span-1 md:col-span-2">
-        <CardHeader>
-          <CardTitle>Bugs theo Sprint</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer
-            config={{
-              bugs: {
-                label: "Số bugs",
-                color: COFFEE_COLORS.mocha,
-              },
-            }}
-            className="h-[300px] w-full"
-          >
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={sprintChartData}>
-                <XAxis
-                  dataKey="name"
-                  stroke="hsl(var(--muted-foreground))"
-                  fontSize={12}
-                  tickLine={false}
-                  axisLine={false}
-                />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="bugs" fill={COFFEE_COLORS.mocha} radius={[8, 8, 0, 0]} />
-              </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
         </CardContent>

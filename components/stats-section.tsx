@@ -1,9 +1,21 @@
-"use client"
+"use client";
 
-import { useState, useMemo } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
+import { useState, useMemo } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import {
   BarChart,
   Bar,
@@ -16,53 +28,65 @@ import {
   PieChart,
   Pie,
   Cell,
-} from "recharts"
-import { DollarSign, Bug, AlertCircle } from "lucide-react"
-import type { BugWithDetails, Developer, Sprint } from "@/lib/types"
+} from "recharts";
+import { DollarSign, Bug, AlertCircle } from "lucide-react";
+import type { BugWithDetails, Developer, Sprint } from "@/lib/types";
 
 interface StatsSectionProps {
-  bugs: BugWithDetails[]
-  developers: Developer[]
-  sprints: Sprint[]
+  bugs: BugWithDetails[];
+  developers: Developer[];
+  sprints: Sprint[];
 }
 
 export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
-  const [filterBy, setFilterBy] = useState<"all" | "developer" | "sprint">("all")
-  const [selectedDeveloper, setSelectedDeveloper] = useState<string>("")
-  const [selectedSprint, setSelectedSprint] = useState<string>("")
+  const [filterBy, setFilterBy] = useState<"all" | "developer" | "sprint">(
+    "all"
+  );
+  const [selectedDeveloper, setSelectedDeveloper] = useState<string>("");
+  const [selectedSprint, setSelectedSprint] = useState<string>("");
 
   // Filter bugs based on selection
   const filteredBugs = useMemo(() => {
-    let result = bugs
+    let result = bugs;
 
     if (filterBy === "developer" && selectedDeveloper) {
-      result = result.filter((b) => b.developer_id === selectedDeveloper)
+      result = result.filter((b) => b.developer_id === selectedDeveloper);
     }
 
     if (filterBy === "sprint" && selectedSprint) {
-      result = result.filter((b) => b.sprint_id === selectedSprint)
+      result = result.filter((b) => b.sprint_id === selectedSprint);
     }
 
-    return result
-  }, [bugs, filterBy, selectedDeveloper, selectedSprint])
+    return result;
+  }, [bugs, filterBy, selectedDeveloper, selectedSprint]);
 
   // Calculate statistics
   const stats = useMemo(() => {
-    const total = filteredBugs.length
-    const totalPenalty = filteredBugs.reduce((sum, b) => sum + (Number(b.penalty_amount) || 0), 0)
-    const pending = filteredBugs.filter((b) => b.penalty_status === "pending").length
-    const paid = filteredBugs.filter((b) => b.penalty_status === "paid").length
-    const waived = filteredBugs.filter((b) => b.penalty_status === "waived").length
+    const total = filteredBugs.length;
+    const totalPenalty = filteredBugs.reduce(
+      (sum, b) => sum + (Number(b.penalty_amount) || 0),
+      0
+    );
+    const pending = filteredBugs.filter(
+      (b) => b.penalty_status === "pending"
+    ).length;
+    const paid = filteredBugs.filter((b) => b.penalty_status === "paid").length;
+    const waived = filteredBugs.filter(
+      (b) => b.penalty_status === "waived"
+    ).length;
     const pendingPenalty = filteredBugs
       .filter((b) => b.penalty_status === "pending")
-      .reduce((sum, b) => sum + (Number(b.penalty_amount) || 0), 0)
+      .reduce((sum, b) => sum + (Number(b.penalty_amount) || 0), 0);
 
-    return { total, totalPenalty, pending, paid, waived, pendingPenalty }
-  }, [filteredBugs])
+    return { total, totalPenalty, pending, paid, waived, pendingPenalty };
+  }, [filteredBugs]);
 
   // Data for developer chart
   const developerData = useMemo(() => {
-    const devStats: Record<string, { name: string; bugs: number; penalty: number }> = {}
+    const devStats: Record<
+      string,
+      { name: string; bugs: number; penalty: number }
+    > = {};
 
     bugs.forEach((bug) => {
       if (!devStats[bug.developer_id]) {
@@ -70,18 +94,21 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
           name: bug.developer.name,
           bugs: 0,
           penalty: 0,
-        }
+        };
       }
-      devStats[bug.developer_id].bugs += 1
-      devStats[bug.developer_id].penalty += Number(bug.penalty_amount) || 0
-    })
+      devStats[bug.developer_id].bugs += 1;
+      devStats[bug.developer_id].penalty += Number(bug.penalty_amount) || 0;
+    });
 
-    return Object.values(devStats).sort((a, b) => b.penalty - a.penalty)
-  }, [bugs])
+    return Object.values(devStats).sort((a, b) => b.penalty - a.penalty);
+  }, [bugs]);
 
   // Data for sprint chart
   const sprintData = useMemo(() => {
-    const sprintStats: Record<string, { name: string; bugs: number; penalty: number }> = {}
+    const sprintStats: Record<
+      string,
+      { name: string; bugs: number; penalty: number }
+    > = {};
 
     bugs.forEach((bug) => {
       if (!sprintStats[bug.sprint_id]) {
@@ -89,32 +116,32 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
           name: bug.sprint.name,
           bugs: 0,
           penalty: 0,
-        }
+        };
       }
-      sprintStats[bug.sprint_id].bugs += 1
-      sprintStats[bug.sprint_id].penalty += Number(bug.penalty_amount) || 0
-    })
+      sprintStats[bug.sprint_id].bugs += 1;
+      sprintStats[bug.sprint_id].penalty += Number(bug.penalty_amount) || 0;
+    });
 
-    return Object.values(sprintStats).sort((a, b) => b.penalty - a.penalty)
-  }, [bugs])
+    return Object.values(sprintStats).sort((a, b) => b.penalty - a.penalty);
+  }, [bugs]);
 
   // Status distribution
   const COFFEE_COLORS = {
-    espresso: "hsl(var(--chart-1))", // Espresso brown
-    mocha: "hsl(var(--chart-2))", // Mocha
-    latte: "hsl(var(--chart-3))", // Latte - light
-    cappuccino: "hsl(var(--chart-4))", // Cappuccino
-    americano: "hsl(var(--chart-5))", // Americano
+    espresso: "var(--chart-1)", // Espresso brown
+    mocha: "var(--chart-2)", // Mocha
+    latte: "var(--chart-3)", // Latte - light
+    cappuccino: "var(--chart-4)", // Cappuccino
+    americano: "var(--chart-5)", // Americano
     pending: "hsl(25 95% 53%)", // Warm orange for pending
     paid: "hsl(142 76% 36%)", // Green for paid
     waived: "hsl(215 16% 47%)", // Neutral gray for waived
-  }
+  };
 
   const statusData = [
     { name: "Chưa đóng", value: stats.pending, color: COFFEE_COLORS.pending },
     { name: "Đã đóng", value: stats.paid, color: COFFEE_COLORS.paid },
     { name: "Miễn phí", value: stats.waived, color: COFFEE_COLORS.waived },
-  ].filter((d) => d.value > 0)
+  ].filter((d) => d.value > 0);
 
   return (
     <div className="space-y-6">
@@ -122,7 +149,9 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
       <Card>
         <CardHeader>
           <CardTitle>Statistics Filters</CardTitle>
-          <CardDescription>Filter statistics by developer or sprint</CardDescription>
+          <CardDescription>
+            Filter statistics by developer or sprint
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -131,9 +160,9 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
               <Select
                 value={filterBy}
                 onValueChange={(value: any) => {
-                  setFilterBy(value)
-                  setSelectedDeveloper("")
-                  setSelectedSprint("")
+                  setFilterBy(value);
+                  setSelectedDeveloper("");
+                  setSelectedSprint("");
                 }}
               >
                 <SelectTrigger>
@@ -150,7 +179,10 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
             {filterBy === "developer" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium">Developer</label>
-                <Select value={selectedDeveloper} onValueChange={setSelectedDeveloper}>
+                <Select
+                  value={selectedDeveloper}
+                  onValueChange={setSelectedDeveloper}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select developer" />
                   </SelectTrigger>
@@ -168,7 +200,10 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
             {filterBy === "sprint" && (
               <div className="space-y-2">
                 <label className="text-sm font-medium">Sprint</label>
-                <Select value={selectedSprint} onValueChange={setSelectedSprint}>
+                <Select
+                  value={selectedSprint}
+                  onValueChange={setSelectedSprint}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select sprint" />
                   </SelectTrigger>
@@ -204,18 +239,24 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{new Intl.NumberFormat("vi-VN").format(stats.totalPenalty)}</div>
+            <div className="text-2xl font-bold">
+              {new Intl.NumberFormat("vi-VN").format(stats.totalPenalty)}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">₫</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending Payment</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Pending Payment
+            </CardTitle>
             <AlertCircle className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-500">{stats.pending}</div>
+            <div className="text-2xl font-bold text-red-500">
+              {stats.pending}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
               {new Intl.NumberFormat("vi-VN").format(stats.pendingPenalty)} ₫
             </p>
@@ -246,12 +287,14 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
         <Card>
           <CardHeader>
             <CardTitle>Bugs by Developer</CardTitle>
-            <CardDescription>Total bugs and penalties per developer</CardDescription>
+            <CardDescription>
+              Total bugs and penalties per developer
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={developerData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="name"
                   angle={-45}
@@ -263,14 +306,22 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
                 <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
                     borderRadius: "var(--radius)",
                   }}
                 />
                 <Legend />
-                <Bar dataKey="bugs" fill={COFFEE_COLORS.espresso} name="Bug Count" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="penalty" fill={COFFEE_COLORS.mocha} name="Penalty (VND)" radius={[8, 8, 0, 0]} />
+                <Bar
+                  dataKey="bugs"
+                  fill={COFFEE_COLORS.espresso}
+                  name="Bug Count"
+                  radius={[8, 8, 0, 0]}
+                />
+                <Bar
+                  dataKey="penalty"
+                  fill={COFFEE_COLORS.mocha}
+                  name="Penalty (VND)"
+                  radius={[8, 8, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -280,12 +331,17 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
         <Card>
           <CardHeader>
             <CardTitle>Bugs by Sprint</CardTitle>
-            <CardDescription>Total bugs and penalties per sprint</CardDescription>
+            <CardDescription>
+              Total bugs and penalties per sprint
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={sprintData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  stroke="hsl(var(--border))"
+                />
                 <XAxis
                   dataKey="name"
                   angle={-45}
@@ -294,17 +350,25 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
                 />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                <YAxis fontSize={12} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "hsl(var(--card))",
-                    border: "1px solid hsl(var(--border))",
                     borderRadius: "var(--radius)",
                   }}
                 />
                 <Legend />
-                <Bar dataKey="bugs" fill={COFFEE_COLORS.latte} name="Bug Count" radius={[8, 8, 0, 0]} />
-                <Bar dataKey="penalty" fill={COFFEE_COLORS.cappuccino} name="Penalty (VND)" radius={[8, 8, 0, 0]} />
+                <Bar
+                  dataKey="bugs"
+                  fill={COFFEE_COLORS.latte}
+                  name="Bug Count"
+                  radius={[8, 8, 0, 0]}
+                />
+                <Bar
+                  dataKey="penalty"
+                  fill={COFFEE_COLORS.cappuccino}
+                  name="Penalty (VND)"
+                  radius={[8, 8, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -336,8 +400,6 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: "hsl(var(--card))",
-                      border: "1px solid hsl(var(--border))",
                       borderRadius: "var(--radius)",
                     }}
                   />
@@ -348,5 +410,5 @@ export function StatsSection({ bugs, developers, sprints }: StatsSectionProps) {
         )}
       </div>
     </div>
-  )
+  );
 }

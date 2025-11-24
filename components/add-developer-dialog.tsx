@@ -140,8 +140,8 @@ export function AddDeveloperDialog() {
             Add Developer
           </Button>
         </SheetTrigger>
-        <SheetContent className="w-full sm:max-w-[540px]">
-          <SheetHeader>
+        <SheetContent className="w-full sm:max-w-[540px] p-0">
+          <SheetHeader className="px-6 pt-6">
             <SheetTitle className="flex items-center gap-2 text-green-600">
               <Check className="h-5 w-5" /> Account Created Successfully
             </SheetTitle>
@@ -150,47 +150,49 @@ export function AddDeveloperDialog() {
             </SheetDescription>
           </SheetHeader>
 
-          <Alert className="bg-muted border-primary/20 mt-4">
-            <Link2 className="h-4 w-4" />
-            <AlertTitle>Magic Link Sent</AlertTitle>
-            <AlertDescription>
-              A login link has been sent to {createdCreds.email}. They can click it to log in instantly.
-            </AlertDescription>
-          </Alert>
+          <div className="px-6">
+            <Alert className="bg-muted border-primary/20 mt-4">
+              <Link2 className="h-4 w-4" />
+              <AlertTitle>Magic Link Sent</AlertTitle>
+              <AlertDescription>
+                A login link has been sent to {createdCreds.email}. They can click it to log in instantly.
+              </AlertDescription>
+            </Alert>
 
-          <div className="space-y-4 my-4">
-            <div className="space-y-2">
-              <Label>Email</Label>
-              <div className="flex items-center gap-2">
-                <Input value={createdCreds.email} readOnly className="bg-muted font-mono" />
+            <div className="space-y-4 my-4">
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <div className="flex items-center gap-2">
+                  <Input value={createdCreds.email} readOnly className="bg-muted font-mono" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label>Password</Label>
+                <div className="flex items-center gap-2">
+                  <Input value={createdCreds.password} readOnly className="bg-muted font-mono" />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Please copy and share this password with the developer securely. We cannot email it for security
+                  reasons.
+                </p>
               </div>
             </div>
-            <div className="space-y-2">
-              <Label>Password</Label>
-              <div className="flex items-center gap-2">
-                <Input value={createdCreds.password} readOnly className="bg-muted font-mono" />
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Please copy and share this password with the developer securely. We cannot email it for security
-                reasons.
-              </p>
-            </div>
+
+            <SheetFooter className="flex-col sm:flex-row gap-2 px-6 pb-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full sm:w-auto bg-transparent"
+                onClick={copyCredentials}
+              >
+                {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
+                {copied ? "Copied" : "Copy Details"}
+              </Button>
+              <Button type="button" className="w-full sm:w-auto" onClick={() => setOpen(false)}>
+                Done
+              </Button>
+            </SheetFooter>
           </div>
-
-          <SheetFooter className="flex-col sm:flex-row gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full sm:w-auto bg-transparent"
-              onClick={copyCredentials}
-            >
-              {copied ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
-              {copied ? "Copied" : "Copy Details"}
-            </Button>
-            <Button type="button" className="w-full sm:w-auto" onClick={() => setOpen(false)}>
-              Done
-            </Button>
-          </SheetFooter>
         </SheetContent>
       </Sheet>
     )
@@ -204,13 +206,13 @@ export function AddDeveloperDialog() {
           Add Developer
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto p-0">
         <form onSubmit={onSubmit} className="flex h-full flex-col">
-          <SheetHeader>
+          <SheetHeader className="px-6 pt-6">
             <SheetTitle>Add Developer</SheetTitle>
             <SheetDescription>Create a new developer account. They will receive a confirmation email.</SheetDescription>
           </SheetHeader>
-          <div className="flex-1 space-y-5 py-6">
+          <div className="flex-1 space-y-5 py-6 px-6">
             <div className="space-y-2">
               <Label htmlFor="name">
                 Name <span className="text-destructive">*</span>
@@ -253,7 +255,7 @@ export function AddDeveloperDialog() {
               <Input id="avatar_url" name="avatar_url" placeholder="https://..." />
             </div>
           </div>
-          <SheetFooter className="gap-2">
+          <SheetFooter className="gap-2 px-6 pb-6">
             <Button
               type="button"
               variant="outline"

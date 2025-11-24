@@ -57,13 +57,13 @@ export function EditDeveloperDialog({ developer, open, onOpenChange }: EditDevel
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto p-0">
         <form onSubmit={onSubmit} className="flex h-full flex-col">
-          <SheetHeader>
+          <SheetHeader className="px-6 pt-6">
             <SheetTitle>Edit Developer</SheetTitle>
             <SheetDescription>Update developer details. Click save when you're done.</SheetDescription>
           </SheetHeader>
-          <div className="flex-1 space-y-5 py-6">
+          <div className="flex-1 space-y-5 py-6 px-6">
             <div className="space-y-2">
               <Label htmlFor="name">
                 Name <span className="text-red-500">*</span>
@@ -81,7 +81,7 @@ export function EditDeveloperDialog({ developer, open, onOpenChange }: EditDevel
               <Input id="avatar_url" name="avatar_url" defaultValue={developer.avatar_url || ""} />
             </div>
           </div>
-          <SheetFooter className="gap-2">
+          <SheetFooter className="gap-2 px-6 pb-6">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
               Cancel
             </Button>

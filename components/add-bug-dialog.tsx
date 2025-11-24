@@ -78,16 +78,16 @@ export function AddBugDialog({ developers, sprints }: AddBugDialogProps) {
           Record Bug
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto p-0">
         <form onSubmit={onSubmit} className="flex h-full flex-col">
-          <SheetHeader>
+          <SheetHeader className="px-6 pt-6">
             <SheetTitle>Record New Bug</SheetTitle>
             <SheetDescription>
               Log a bug, assign a developer, select a sprint, and set the penalty amount.
             </SheetDescription>
           </SheetHeader>
 
-          <div className="flex-1 space-y-5 py-6">
+          <div className="flex-1 space-y-5 py-6 px-6">
             {/* Title Field */}
             <div className="space-y-2">
               <Label htmlFor="title" className="text-sm font-semibold">
@@ -189,7 +189,7 @@ export function AddBugDialog({ developers, sprints }: AddBugDialogProps) {
             </div>
           </div>
 
-          <SheetFooter className="gap-2">
+          <SheetFooter className="gap-2 px-6 pb-6">
             <Button type="button" variant="outline" onClick={() => setOpen(false)} className="w-full sm:w-auto">
               Cancel
             </Button>

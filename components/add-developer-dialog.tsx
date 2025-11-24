@@ -140,7 +140,7 @@ export function AddDeveloperDialog() {
             Add Developer
           </Button>
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent className="w-full sm:max-w-[540px]">
           <SheetHeader>
             <SheetTitle className="flex items-center gap-2 text-green-600">
               <Check className="h-5 w-5" /> Account Created Successfully
@@ -204,34 +204,27 @@ export function AddDeveloperDialog() {
           Add Developer
         </Button>
       </SheetTrigger>
-      <SheetContent className="overflow-y-auto">
-        <form onSubmit={onSubmit}>
+      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto">
+        <form onSubmit={onSubmit} className="flex h-full flex-col">
           <SheetHeader>
             <SheetTitle>Add Developer</SheetTitle>
             <SheetDescription>Create a new developer account. They will receive a confirmation email.</SheetDescription>
           </SheetHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid sm:grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="sm:text-right">
+          <div className="flex-1 space-y-5 py-6">
+            <div className="space-y-2">
+              <Label htmlFor="name">
                 Name <span className="text-destructive">*</span>
               </Label>
-              <Input id="name" name="name" placeholder="John Doe" className="sm:col-span-3" required />
+              <Input id="name" name="name" placeholder="John Doe" required />
             </div>
-            <div className="grid sm:grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="sm:text-right">
+            <div className="space-y-2">
+              <Label htmlFor="email">
                 Email <span className="text-destructive">*</span>
               </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="john@example.com"
-                className="sm:col-span-3"
-                required
-              />
+              <Input id="email" name="email" type="email" placeholder="john@example.com" required />
             </div>
-            <div className="grid sm:grid-cols-4 items-center gap-4">
-              <Label htmlFor="password" className="sm:text-right">
+            <div className="space-y-2">
+              <Label htmlFor="password">
                 Password <span className="text-destructive">*</span>
               </Label>
               <Input
@@ -239,17 +232,14 @@ export function AddDeveloperDialog() {
                 name="password"
                 type="password"
                 placeholder="Min 6 characters"
-                className="sm:col-span-3"
                 minLength={6}
                 required
               />
             </div>
-            <div className="grid sm:grid-cols-4 items-center gap-4">
-              <Label htmlFor="role" className="sm:text-right">
-                Role
-              </Label>
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
               <Select name="role" defaultValue="user">
-                <SelectTrigger className="sm:col-span-3">
+                <SelectTrigger>
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -258,18 +248,22 @@ export function AddDeveloperDialog() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid sm:grid-cols-4 items-center gap-4">
-              <Label htmlFor="avatar_url" className="sm:text-right">
-                Avatar URL
-              </Label>
-              <Input id="avatar_url" name="avatar_url" placeholder="https://..." className="sm:col-span-3" />
+            <div className="space-y-2">
+              <Label htmlFor="avatar_url">Avatar URL</Label>
+              <Input id="avatar_url" name="avatar_url" placeholder="https://..." />
             </div>
           </div>
           <SheetFooter className="gap-2">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={loading}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={loading}
+              className="w-full sm:w-auto"
+            >
               Cancel
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="w-full sm:w-auto">
               {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               {loading ? "Creating..." : "Create Account"}
             </Button>

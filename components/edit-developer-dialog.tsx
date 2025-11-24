@@ -57,46 +57,35 @@ export function EditDeveloperDialog({ developer, open, onOpenChange }: EditDevel
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
-        <form onSubmit={onSubmit}>
+      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto">
+        <form onSubmit={onSubmit} className="flex h-full flex-col">
           <SheetHeader>
             <SheetTitle>Edit Developer</SheetTitle>
             <SheetDescription>Update developer details. Click save when you're done.</SheetDescription>
           </SheetHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
+          <div className="flex-1 space-y-5 py-6">
+            <div className="space-y-2">
+              <Label htmlFor="name">
+                Name <span className="text-red-500">*</span>
               </Label>
-              <Input id="name" name="name" defaultValue={developer.name} className="col-span-3" required />
+              <Input id="name" name="name" defaultValue={developer.name} required />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
-                Email
+            <div className="space-y-2">
+              <Label htmlFor="email">
+                Email <span className="text-red-500">*</span>
               </Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                defaultValue={developer.email}
-                className="col-span-3"
-                required
-              />
+              <Input id="email" name="email" type="email" defaultValue={developer.email} required />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="avatar_url" className="text-right">
-                Avatar URL
-              </Label>
-              <Input
-                id="avatar_url"
-                name="avatar_url"
-                defaultValue={developer.avatar_url || ""}
-                className="col-span-3"
-              />
+            <div className="space-y-2">
+              <Label htmlFor="avatar_url">Avatar URL</Label>
+              <Input id="avatar_url" name="avatar_url" defaultValue={developer.avatar_url || ""} />
             </div>
           </div>
-          <SheetFooter>
-            <Button type="submit" disabled={loading}>
+          <SheetFooter className="gap-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading} className="w-full sm:w-auto">
               {loading ? "Saving..." : "Save changes"}
             </Button>
           </SheetFooter>

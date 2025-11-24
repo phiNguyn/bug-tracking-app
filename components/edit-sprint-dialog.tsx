@@ -74,62 +74,65 @@ export function EditSprintDialog({ sprint, open, onOpenChange }: EditSprintDialo
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
-        <form onSubmit={onSubmit}>
+      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto">
+        <form onSubmit={onSubmit} className="flex h-full flex-col">
           <SheetHeader>
             <SheetTitle>Edit Sprint</SheetTitle>
             <SheetDescription>Update sprint details.</SheetDescription>
           </SheetHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
+          <div className="flex-1 space-y-6 py-6">
+            <div className="space-y-2">
+              <Label htmlFor="name">
+                Name <span className="text-red-500">*</span>
               </Label>
-              <Input id="name" name="name" defaultValue={sprint.name} className="col-span-3" required />
+              <Input id="name" name="name" defaultValue={sprint.name} required />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Duration</Label>
-              <div className="col-span-3">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      id="date"
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !dateRange.from && "text-muted-foreground",
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dateRange.from ? (
-                        dateRange.to ? (
-                          <>
-                            {format(dateRange.from, "LLL dd, y")} - {format(dateRange.to, "LLL dd, y")}
-                          </>
-                        ) : (
-                          format(dateRange.from, "LLL dd, y")
-                        )
+            <div className="space-y-2">
+              <Label>
+                Duration <span className="text-red-500">*</span>
+              </Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    id="date"
+                    variant={"outline"}
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !dateRange.from && "text-muted-foreground",
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {dateRange.from ? (
+                      dateRange.to ? (
+                        <>
+                          {format(dateRange.from, "LLL dd, y")} - {format(dateRange.to, "LLL dd, y")}
+                        </>
                       ) : (
-                        <span>Pick a date range</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      initialFocus
-                      mode="range"
-                      defaultMonth={dateRange.from}
-                      selected={dateRange}
-                      onSelect={(range) => setDateRange(range || { from: undefined, to: undefined })}
-                      numberOfMonths={2}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
+                        format(dateRange.from, "LLL dd, y")
+                      )
+                    ) : (
+                      <span>Pick a date range</span>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    initialFocus
+                    mode="range"
+                    defaultMonth={dateRange.from}
+                    selected={dateRange}
+                    onSelect={(range) => setDateRange(range || { from: undefined, to: undefined })}
+                    numberOfMonths={2}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
-          <SheetFooter>
-            <Button type="submit" disabled={loading}>
+          <SheetFooter className="gap-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading} className="w-full sm:w-auto">
               {loading ? "Saving..." : "Save changes"}
             </Button>
           </SheetFooter>

@@ -69,16 +69,14 @@ export function EditBugDialog({ bug, developers, sprints, open, onOpenChange }: 
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="overflow-y-auto">
-        <form onSubmit={onSubmit}>
-          <SheetHeader className="mb-6">
-            <SheetTitle className="text-2xl">Edit Bug</SheetTitle>
-            <SheetDescription className="text-base">
-              Update bug details, developer assignment, sprint, and penalty status.
-            </SheetDescription>
+      <SheetContent className="w-full sm:max-w-[540px] overflow-y-auto">
+        <form onSubmit={onSubmit} className="flex h-full flex-col">
+          <SheetHeader>
+            <SheetTitle>Edit Bug</SheetTitle>
+            <SheetDescription>Update bug details, developer assignment, sprint, and penalty status.</SheetDescription>
           </SheetHeader>
 
-          <div className="space-y-5">
+          <div className="flex-1 space-y-5 py-6">
             {/* Title Field */}
             <div className="space-y-2">
               <Label htmlFor="title" className="text-sm font-semibold">
@@ -189,7 +187,7 @@ export function EditBugDialog({ bug, developers, sprints, open, onOpenChange }: 
             </div>
           </div>
 
-          <SheetFooter className="mt-8 gap-2">
+          <SheetFooter className="gap-2">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
               Cancel
             </Button>
